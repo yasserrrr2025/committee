@@ -1,6 +1,6 @@
 let students = [];
 
-// جلب البيانات
+// تحميل البيانات
 fetch('data/students.json')
     .then(r => r.json())
     .then(data => {
@@ -8,49 +8,79 @@ fetch('data/students.json')
         initGrades();
     });
 
-// التبديل بين التبويبات
-function showTab(t) {
-    document.getElementById('search-id').style.display = t === 'id' ? 'block' : 'none';
-    document.getElementById('search-list').style.display = t === 'list' ? 'block' : 'none';
+// التبديل بين الأوضاع
+function switchMode(mode) {
+    // إخفاء النتائج السابقة
+    document.getElementById('resultArea').innerHTML = '';
     
-    // تحديث الأزرار النشطة
-    document.getElementById('tab-id').classList.toggle('active', t === 'id');
-    document.getElementById('tab-list').classList.toggle('active', t === 'list');
-    
-    // تفريغ النتائج عند التبديل لتجربة مستخدم أنظف
-    document.getElementById('resultId').innerHTML = '';
-    document.getElementById('resultList').innerHTML = '';
-}
+    // تحديث الأزرار
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-${mode}`).classList.add('active');
 
-// دالة لدعم ضغط زر Enter في مربع البحث
-function handleEnter(e) {
-    if(e.key === 'Enter') searchById();
-}
+    // إظهار القسم المطلوب مع تأثير بسيط
+    const sId = document.getElementById('search-id');
+    const sList = document.getElementById('search-list');
 
-// البحث برقم الهوية
-function searchById() {
-    let id = document.getElementById('nationalId').value.trim();
-    if(!id) return; // عدم البحث إذا كان الحقل فارغاً
-    
-    let s = students.find(x => x.national_id === id);
-    let container = document.getElementById('resultId');
-    
-    if (s) {
-        container.innerHTML = render(s);
+    if (mode === 'id') {
+        sList.style.display = 'none';
+        sId.style.display = 'block';
+        sId.style.opacity = 0;
+        setTimeout(() => sId.style.opacity = 1, 50);
     } else {
-        container.innerHTML = `
-            <div class="not-found">
-                <i class="fas fa-exclamation-circle"></i>
-                لم يتم العثور على طالب بهذا الرقم
-            </div>`;
+        sId.style.display = 'none';
+        sList.style.display = 'block';
+        sList.style.opacity = 0;
+        setTimeout(() => sList.style.opacity = 1, 50);
     }
 }
 
-// تهيئة القوائم
+function handleEnter(e) {
+    if (e.key === 'Enter') startSearch('id');
+}
+
+// دالة البحث مع تأثير التحميل
+function startSearch(type) {
+    const resultArea = document.getElementById('resultArea');
+    const loader = document.getElementById('loader');
+    
+    let studentData = null;
+
+    if (type === 'id') {
+        const val = document.getElementById('nationalId').value.trim();
+        if (!val) return;
+        studentData = students.find(x => x.national_id === val);
+    } else {
+        const val = document.getElementById('student').value;
+        if (!val) return;
+        studentData = students.find(x => x.national_id === val);
+    }
+
+    // إظهار اللودر وإخفاء النتيجة السابقة
+    resultArea.innerHTML = '';
+    loader.style.display = 'block';
+
+    // محاكاة تأخير الشبكة لإعطاء شعور "النظام التقني"
+    setTimeout(() => {
+        loader.style.display = 'none';
+        
+        if (studentData) {
+            resultArea.innerHTML = renderCard(studentData);
+        } else {
+            resultArea.innerHTML = `
+                <div class="not-found-msg">
+                    <i class="fas fa-times-circle"></i><br>
+                    لم يتم العثور على بيانات مطابقة في السجلات
+                </div>
+            `;
+        }
+    }, 800); // تأخير 800 جزء من الثانية
+}
+
+// تعبئة القوائم
 function initGrades() {
     let g = [...new Set(students.map(s => s.grade))];
     let sel = document.getElementById('grade');
-    sel.innerHTML = '<option value="">-- اختر الصف الدراسي --</option>';
+    sel.innerHTML = '<option value="">اختر المرحلة الدراسية</option>';
     g.forEach(x => sel.innerHTML += `<option>${x}</option>`);
 }
 
@@ -58,11 +88,11 @@ function loadClasses() {
     let grade = document.getElementById('grade').value;
     let c = [...new Set(students.filter(s => s.grade === grade).map(s => s.class))];
     let sel = document.getElementById('class');
-    sel.innerHTML = '<option value="">-- اختر الفصل --</option>';
+    sel.innerHTML = '<option value="">اختر الفصل</option>';
     c.forEach(x => sel.innerHTML += `<option>${x}</option>`);
     
-    // تصفير قائمة الطلاب
-    document.getElementById('student').innerHTML = '<option value="">-- اختر الطالب --</option>';
+    // تصفير
+    document.getElementById('student').innerHTML = '<option value="">اختر الطالب</option>';
 }
 
 function loadStudents() {
@@ -70,52 +100,49 @@ function loadStudents() {
     let cls = document.getElementById('class').value;
     let list = students.filter(s => s.grade === grade && s.class === cls);
     let sel = document.getElementById('student');
-    sel.innerHTML = '<option value="">-- اختر الطالب --</option>';
+    sel.innerHTML = '<option value="">اختر الطالب من القائمة</option>';
     list.forEach(s => sel.innerHTML += `<option value="${s.national_id}">${s.name}</option>`);
 }
 
-function showStudent() {
-    let id = document.getElementById('student').value;
-    if(!id) return;
-    let s = students.find(x => x.national_id === id);
-    document.getElementById('resultList').innerHTML = s ? render(s) : '';
-}
-
-// دالة العرض المحسنة (تصميم البطاقة)
-function render(s) {
+// تصميم البطاقة الرقمية (Holo Card)
+function renderCard(s) {
     return `
-    <div class="ticket-container">
-        <div class="ticket-header">
-            <h3><i class="fas fa-address-card"></i> بطاقة لجنة اختبار</h3>
-            <span class="id-badge">ID: ${s.national_id}</span>
+    <div class="holo-card">
+        <div class="card-header">
+            <span style="color:var(--neon-blue); font-size:0.8rem; letter-spacing:1px">DATA VERIFIED</span>
+            <div class="card-status">نشط</div>
         </div>
-
-        <div class="ticket-body">
-            <div class="student-main-info">
-                <i class="fas fa-user-circle fa-3x" style="color:#cbd5e1; margin-bottom:10px"></i>
-                <h2>${s.name}</h2>
-                <p>${s.grade} - فصل (${s.class})</p>
-            </div>
-
-            <div class="ticket-grid">
-                <div class="data-box highlight">
-                    <i class="fas fa-chair icon"></i>
-                    <span class="label">رقم الجلوس</span>
-                    <span class="value">${s.seat}</span>
-                </div>
-
-                <div class="data-box highlight">
-                    <i class="fas fa-door-open icon"></i>
-                    <span class="label">رقم اللجنة</span>
-                    <span class="value">${s.committee}</span>
-                </div>
-            </div>
+        
+        <div class="card-body">
+            <div class="student-name-display">${s.name}</div>
+            <div class="student-grade-display">${s.grade} - ${s.class}</div>
             
-            <div style="text-align:center; margin-top:20px;">
-                <button onclick="window.print()" style="background:transparent; color:#64748b; border:1px solid #cbd5e1; width:auto; padding:8px 20px;">
-                    <i class="fas fa-print"></i> طباعة البطاقة
-                </button>
+            <div class="info-grid">
+                <div class="info-box highlight">
+                    <span class="box-label">رقم الجلوس (Seat)</span>
+                    <span class="box-value">${s.seat}</span>
+                </div>
+                
+                <div class="info-box highlight">
+                    <span class="box-label">اللجنة (Committee)</span>
+                    <span class="box-value">${s.committee}</span>
+                </div>
+
+                <div class="info-box">
+                     <span class="box-label">رقم الهوية</span>
+                     <div style="font-weight:bold; letter-spacing:1px; margin-top:5px">${s.national_id}</div>
+                </div>
+
+                <div class="info-box">
+                     <span class="box-label">رقم التسلسل</span>
+                     <div style="font-weight:bold; margin-top:5px">#${s.seat_full.slice(-4)}</div>
+                </div>
+            </div>
+
+            <div style="margin-top:20px; font-size:0.7rem; color:var(--text-sec);">
+                يرجى التوجه لمقر اللجنة قبل موعد الاختبار بـ 15 دقيقة
             </div>
         </div>
-    </div>`;
+    </div>
+    `;
 }
