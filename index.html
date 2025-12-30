@@ -1,42 +1,78 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>الاستعلام عن لجنة الطالب</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <title>بوابة لجان الاختبارات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<header>
-  <img src="https://www.raed.net/img?id=1492746" alt="شعار المدرسة">
-  <h1>بوابة الاستعلام عن لجنة الاختبارات</h1>
-  <p>يمكنك البحث برقم الهوية أو عبر الصف والفصل</p>
-</header>
 
-<main class="card">
-  <div class="tabs">
-    <button onclick="showTab('id')" class="active" id="tab-id">بحث برقم الهوية</button>
-    <button onclick="showTab('list')" id="tab-list">بحث بالقوائم</button>
-  </div>
+<div class="main-container">
+    <header>
+        <div class="logo-area">
+            <img src="https://www.raed.net/img?id=1492746" alt="شعار المدرسة" class="animate-logo">
+        </div>
+        <h1>بوابة الاستعلام عن اللجان</h1>
+        <p>الاستعلام الآلي عن أرقام الجلوس ومقار اللجان للاختبارات النهائية</p>
+    </header>
 
-  <section id="search-id">
-    <input type="text" id="nationalId" placeholder="أدخل رقم الهوية">
-    <button onclick="searchById()">بحث</button>
-    <div id="resultId"></div>
-  </section>
+    <main class="card glass-effect">
+        <div class="tabs-container">
+            <button onclick="showTab('id')" class="tab-btn active" id="tab-id">
+                <i class="fas fa-id-card"></i> بحث بالهوية
+            </button>
+            <button onclick="showTab('list')" class="tab-btn" id="tab-list">
+                <i class="fas fa-list-ul"></i> القوائم المنسدلة
+            </button>
+        </div>
 
-  <section id="search-list" style="display:none">
-    <select id="grade" onchange="loadClasses()"></select>
-    <select id="class" onchange="loadStudents()"></select>
-    <select id="student" onchange="showStudent()"></select>
-    <div id="resultList"></div>
-  </section>
-</main>
+        <div class="content-body">
+            <section id="search-id" class="search-section">
+                <div class="input-group">
+                    <i class="fas fa-search icon"></i>
+                    <input type="number" id="nationalId" placeholder="أدخل رقم الهوية الوطنية..." onkeypress="handleEnter(event)">
+                </div>
+                <button onclick="searchById()" class="action-btn">استعلام مباشر</button>
+                <div id="resultId" class="result-container"></div>
+            </section>
 
-<footer>
-جميع الحقوق محفوظة © 2025
-</footer>
+            <section id="search-list" class="search-section" style="display:none">
+                <div class="select-group">
+                    <label>الصف الدراسي</label>
+                    <div class="custom-select">
+                        <select id="grade" onchange="loadClasses()"></select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="select-group">
+                    <label>الفصل</label>
+                    <div class="custom-select">
+                        <select id="class" onchange="loadStudents()"></select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="select-group">
+                    <label>اسم الطالب</label>
+                    <div class="custom-select">
+                        <select id="student" onchange="showStudent()"></select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div id="resultList" class="result-container"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>تم التطوير بواسطة وحدة التقنية © 2025</p>
+    </footer>
+</div>
 
 <script src="assets/js/app.js"></script>
 </body>
