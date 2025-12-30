@@ -2,75 +2,81 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>بوابة لجان الاختبارات</title>
+    <title>بوابة الوصول | لجان الاختبارات</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<div class="main-container">
+<div class="bg-animation">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+
+<div class="glass-container">
     <header>
-        <div class="logo-area">
-            <img src="https://www.raed.net/img?id=1492746" alt="شعار المدرسة" class="animate-logo">
+        <div class="logo-wrapper">
+            <img src="https://www.raed.net/img?id=1492746" alt="شعار المدرسة">
+            <div class="logo-glow"></div>
         </div>
-        <h1>بوابة الاستعلام عن اللجان</h1>
-        <p>الاستعلام الآلي عن أرقام الجلوس ومقار اللجان للاختبارات النهائية</p>
+        <h1>نظام الاستعلام المركزي</h1>
+        <p class="subtitle">بوابة لجان الاختبارات النهائية</p>
     </header>
 
-    <main class="card glass-effect">
-        <div class="tabs-container">
-            <button onclick="showTab('id')" class="tab-btn active" id="tab-id">
-                <i class="fas fa-id-card"></i> بحث بالهوية
+    <main>
+        <div class="floating-tabs">
+            <button onclick="switchMode('id')" class="mode-btn active" id="btn-id">
+                <i class="fas fa-fingerprint"></i>
+                <span>رقم الهوية</span>
             </button>
-            <button onclick="showTab('list')" class="tab-btn" id="tab-list">
-                <i class="fas fa-list-ul"></i> القوائم المنسدلة
+            <button onclick="switchMode('list')" class="mode-btn" id="btn-list">
+                <i class="fas fa-layer-group"></i>
+                <span>القوائم</span>
             </button>
         </div>
 
-        <div class="content-body">
-            <section id="search-id" class="search-section">
-                <div class="input-group">
-                    <i class="fas fa-search icon"></i>
-                    <input type="number" id="nationalId" placeholder="أدخل رقم الهوية الوطنية..." onkeypress="handleEnter(event)">
+        <div class="content-area">
+            <section id="search-id" class="active-section">
+                <div class="cyber-input-group">
+                    <input type="number" id="nationalId" placeholder=" " autocomplete="off" onkeypress="handleEnter(event)">
+                    <label>أدخل رقم الهوية الوطنية</label>
+                    <span class="focus-border"></span>
+                    <i class="fas fa-search input-icon"></i>
                 </div>
-                <button onclick="searchById()" class="action-btn">استعلام مباشر</button>
-                <div id="resultId" class="result-container"></div>
+                <button onclick="startSearch('id')" class="cyber-btn">
+                    <span class="btn-text">بدء التحقق</span>
+                    <span class="btn-glitch"></span>
+                </button>
             </section>
 
-            <section id="search-list" class="search-section" style="display:none">
-                <div class="select-group">
-                    <label>الصف الدراسي</label>
-                    <div class="custom-select">
-                        <select id="grade" onchange="loadClasses()"></select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+            <section id="search-list" style="display:none">
+                <div class="cyber-select-group">
+                    <select id="grade" onchange="loadClasses()"></select>
+                    <span class="custom-arrow"></span>
                 </div>
-                
-                <div class="select-group">
-                    <label>الفصل</label>
-                    <div class="custom-select">
-                        <select id="class" onchange="loadStudents()"></select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+                <div class="cyber-select-group">
+                    <select id="class" onchange="loadStudents()"></select>
+                    <span class="custom-arrow"></span>
                 </div>
-
-                <div class="select-group">
-                    <label>اسم الطالب</label>
-                    <div class="custom-select">
-                        <select id="student" onchange="showStudent()"></select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+                <div class="cyber-select-group">
+                    <select id="student" onchange="startSearch('list')"></select>
+                    <span class="custom-arrow"></span>
                 </div>
-                
-                <div id="resultList" class="result-container"></div>
             </section>
+
+            <div id="loader" class="scanner-container" style="display:none">
+                <div class="scan-line"></div>
+                <p>جاري معالجة البيانات...</p>
+            </div>
+
+            <div id="resultArea"></div>
         </div>
     </main>
 
     <footer>
-        <p>تم التطوير بواسطة وحدة التقنية © 2025</p>
+        <span class="status-dot"></span> النظام متصل | جميع الحقوق محفوظة © 2025
     </footer>
 </div>
 
