@@ -84,29 +84,37 @@ function showStudent() {
 // دالة العرض المحسنة (تصميم البطاقة)
 function render(s) {
     return `
-    <div class="result-card">
-        <div class="result-header">
-            <div class="result-icon">
-                <i class="fas fa-user-graduate"></i>
-            </div>
-            <div>
-                <span class="info-label">اسم الطالب</span>
-                <div class="student-name">${s.name}</div>
-            </div>
+    <div class="ticket-container">
+        <div class="ticket-header">
+            <h3><i class="fas fa-address-card"></i> بطاقة لجنة اختبار</h3>
+            <span class="id-badge">ID: ${s.national_id}</span>
         </div>
-        
-        <div class="result-grid">
-            <div class="info-item">
-                <span class="info-label">الصف / الفصل</span>
-                <span class="info-value">${s.grade} - ${s.class}</span>
+
+        <div class="ticket-body">
+            <div class="student-main-info">
+                <i class="fas fa-user-circle fa-3x" style="color:#cbd5e1; margin-bottom:10px"></i>
+                <h2>${s.name}</h2>
+                <p>${s.grade} - فصل (${s.class})</p>
             </div>
-            <div class="info-item">
-                <span class="info-label">رقم الجلوس</span>
-                <span class="info-value" style="color:var(--primary-color)">${s.seat}</span>
+
+            <div class="ticket-grid">
+                <div class="data-box highlight">
+                    <i class="fas fa-chair icon"></i>
+                    <span class="label">رقم الجلوس</span>
+                    <span class="value">${s.seat}</span>
+                </div>
+
+                <div class="data-box highlight">
+                    <i class="fas fa-door-open icon"></i>
+                    <span class="label">رقم اللجنة</span>
+                    <span class="value">${s.committee}</span>
+                </div>
             </div>
-            <div class="info-item" style="grid-column: span 2; background: #eff6ff; border-color: #bfdbfe;">
-                <span class="info-label">مقر اللجنة</span>
-                <span class="info-value"><i class="fas fa-map-marker-alt"></i> لجنة رقم (${s.committee})</span>
+            
+            <div style="text-align:center; margin-top:20px;">
+                <button onclick="window.print()" style="background:transparent; color:#64748b; border:1px solid #cbd5e1; width:auto; padding:8px 20px;">
+                    <i class="fas fa-print"></i> طباعة البطاقة
+                </button>
             </div>
         </div>
     </div>`;
