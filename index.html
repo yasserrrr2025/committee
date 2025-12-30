@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>الاستعلام عن لجنة الطالب</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header>
+  <img src="https://www.raed.net/img?id=1492746" alt="شعار المدرسة">
+  <h1>بوابة الاستعلام عن لجنة الاختبارات</h1>
+  <p>يمكنك البحث برقم الهوية أو عبر الصف والفصل</p>
+</header>
+
+<main class="card">
+  <div class="tabs">
+    <button onclick="showTab('id')" class="active" id="tab-id">بحث برقم الهوية</button>
+    <button onclick="showTab('list')" id="tab-list">بحث بالقوائم</button>
+  </div>
+
+  <section id="search-id">
+    <input type="text" id="nationalId" placeholder="أدخل رقم الهوية">
+    <button onclick="searchById()">بحث</button>
+    <div id="resultId"></div>
+  </section>
+
+  <section id="search-list" style="display:none">
+    <select id="grade" onchange="loadClasses()"></select>
+    <select id="class" onchange="loadStudents()"></select>
+    <select id="student" onchange="showStudent()"></select>
+    <div id="resultList"></div>
+  </section>
+</main>
+
+<footer>
+جميع الحقوق محفوظة © 2025
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
